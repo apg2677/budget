@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { Container, Grid, Segment, Icon } from "semantic-ui-react";
 import "./App.css";
 import MainHeader from "./components/MainHeader";
@@ -8,6 +9,7 @@ import DisplayBalances from "./components/DisplayBalances";
 import EntryLine from "./components/EntryLine";
 
 function App() {
+  const [entries, setEntries] = useState(initialEntries);
   return (
     <Container>
       <MainHeader title="Budget" />
@@ -16,8 +18,16 @@ function App() {
       <DisplayBalances />
 
       <MainHeader title={"History"} type="h3" />
-      <EntryLine description="income" value="10.56" />
-      <EntryLine description="expense" value="120.56" isExpense />
+      {entries.map((entry, i) => {
+        return (
+          <EntryLine
+            key={i}
+            isExpense={entry.isExpense}
+            description={entry.title}
+            value={entry.value}
+          />
+        );
+      })}
 
       <MainHeader title="Add new transaction" type="h3" />
       <NewEntryForm />
@@ -26,3 +36,10 @@ function App() {
 }
 
 export default App;
+
+var initialEntries = [
+  { title: "Work Income", value: "1000.00", isExpense: false },
+  { title: "Water Bill", value: "20.00", isExpense: true },
+  { title: "Rent", value: "300.00", isExpense: true },
+  { title: "Power Bill", value: "50.00", isExpense: true },
+];
