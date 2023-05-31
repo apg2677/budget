@@ -7,6 +7,7 @@ import NewEntryForm from "./components/NewEntryForm";
 import DisplayBalance from "./components/DisplayBalance";
 import DisplayBalances from "./components/DisplayBalances";
 import EntryLine from "./components/EntryLine";
+import EntryLines from "./components/EntryLines";
 
 function App() {
   const [entries, setEntries] = useState(initialEntries);
@@ -18,17 +19,7 @@ function App() {
       <DisplayBalances />
 
       <MainHeader title={"History"} type="h3" />
-      {entries.map((entry, i) => {
-        return (
-          <EntryLine
-            key={i}
-            isExpense={entry.isExpense}
-            description={entry.title}
-            value={entry.value}
-          />
-        );
-      })}
-
+      <EntryLines entries={entries} />
       <MainHeader title="Add new transaction" type="h3" />
       <NewEntryForm />
     </Container>
@@ -38,8 +29,8 @@ function App() {
 export default App;
 
 var initialEntries = [
-  { title: "Work Income", value: "1000.00", isExpense: false },
-  { title: "Water Bill", value: "20.00", isExpense: true },
-  { title: "Rent", value: "300.00", isExpense: true },
-  { title: "Power Bill", value: "50.00", isExpense: true },
+  { id: 1, title: "Work Income", value: "1000.00", isExpense: false },
+  { id: 2, title: "Water Bill", value: "20.00", isExpense: true },
+  { id: 3, title: "Rent", value: "300.00", isExpense: true },
+  { id: 4, title: "Power Bill", value: "50.00", isExpense: true },
 ];
