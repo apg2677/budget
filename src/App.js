@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Grid, Segment, Icon } from "semantic-ui-react";
 import "./App.css";
 import MainHeader from "./components/MainHeader";
-import ButtonSaveOrCancel from "./components/ButtonSaveOrCancel";
+
 import NewEntryForm from "./components/NewEntryForm";
 import DisplayBalance from "./components/DisplayBalance";
 import DisplayBalances from "./components/DisplayBalances";
@@ -15,25 +15,39 @@ function App() {
   const [value, setValue] = useState(0);
   const [isExpense, setIsExpense] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+  const [entryId, setEntryId] = useState(null);
 
+  useEffect(() => {
+    if (!isOpen && entryId) {
+      const index = entries.findIndex((entry) => entry.id === entryId);
+      const newEntries = [...entries];
+      newEntries[index].description = description;
+      newEntries[index].value = value;
+      newEntries[index].isExpense = isExpense;
+      setEntries(newEntries);
+      resetEntry();
+    }
+  }, [isOpen]);
   const deleteEntry = (id) => {
     const result = entries.filter((entry) => {
       return entry.id !== id;
     });
     setEntries(result);
   };
+
   const editEntry = (id) => {
     console.log(`edit entry with id: ${id}`);
     if (id) {
       const index = entries.findIndex((entry) => entry.id === id);
       const entry = entries[index];
+      setEntryId(id);
       setDescription(entry.description);
       setValue(entry.value);
       setIsExpense(entry.isExpense);
       setIsOpen(true);
     }
   };
-  const addEntry = (description, value, isExpense) => {
+  const addEntry = () => {
     const result = entries.concat({
       id: entries.length + 1,
       description,
@@ -43,6 +57,12 @@ function App() {
     console.log("result", result);
     console.log("entries", entries);
     setEntries(result);
+    resetEntry();
+  };
+  const resetEntry = () => {
+    setDescription("");
+    setValue("");
+    setIsExpense(true);
   };
   return (
     <Container>
