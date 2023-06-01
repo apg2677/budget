@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Container, Grid, Segment, Icon } from "semantic-ui-react";
+import { Container } from "semantic-ui-react";
 import "./App.css";
 import MainHeader from "./components/MainHeader";
 
 import NewEntryForm from "./components/NewEntryForm";
 import DisplayBalance from "./components/DisplayBalance";
 import DisplayBalances from "./components/DisplayBalances";
-import EntryLine from "./components/EntryLine";
+
 import EntryLines from "./components/EntryLines";
 import ModalEdit from "./components/ModalEdit";
 function App() {
@@ -32,6 +32,7 @@ function App() {
       setEntries(newEntries);
       resetEntry();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   useEffect(() => {
