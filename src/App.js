@@ -8,15 +8,30 @@ import DisplayBalance from "./components/DisplayBalance";
 import DisplayBalances from "./components/DisplayBalances";
 import EntryLine from "./components/EntryLine";
 import EntryLines from "./components/EntryLines";
-
+import ModalEdit from "./components/ModalEdit";
 function App() {
   const [entries, setEntries] = useState(initialEntries);
+  const [description, setDescription] = useState("");
+  const [value, setValue] = useState(0);
+  const [isExpense, setIsExpense] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const deleteEntry = (id) => {
     const result = entries.filter((entry) => {
       return entry.id !== id;
     });
     setEntries(result);
+  };
+  const editEntry = (id) => {
+    console.log(`edit entry with id: ${id}`);
+    if (id) {
+      const index = entries.findIndex((entry) => entry.id === id);
+      const entry = entries[index];
+      setDescription(entry.description);
+      setValue(entry.value);
+      setIsExpense(entry.isExpense);
+      setIsOpen(true);
+    }
   };
   const addEntry = (description, value, isExpense) => {
     const result = entries.concat({
@@ -37,9 +52,33 @@ function App() {
       <DisplayBalances />
 
       <MainHeader title={"History"} type="h3" />
-      <EntryLines entries={entries} deleteEntry={deleteEntry} />
+      <EntryLines
+        entries={entries}
+        deleteEntry={deleteEntry}
+        setIsOpen={setIsOpen}
+        editEntry={editEntry}
+      />
       <MainHeader title="Add new transaction" type="h3" />
-      <NewEntryForm addEntry={addEntry} />
+      <NewEntryForm
+        addEntry={addEntry}
+        description={description}
+        value={value}
+        isExpense={isExpense}
+        setValue={setValue}
+        setDescription={setDescription}
+        setIsExpense={setIsExpense}
+      />
+      <ModalEdit
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        addEntry={addEntry}
+        description={description}
+        value={value}
+        isExpense={isExpense}
+        setValue={setValue}
+        setDescription={setDescription}
+        setIsExpense={setIsExpense}
+      />
     </Container>
   );
 }
