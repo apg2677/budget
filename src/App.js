@@ -9,6 +9,9 @@ import DisplayBalances from "./components/DisplayBalances";
 
 import EntryLines from "./components/EntryLines";
 import ModalEdit from "./components/ModalEdit";
+
+import { legacy_createStore as createStore } from "redux";
+
 function App() {
   const [entries, setEntries] = useState(initialEntries);
   const [description, setDescription] = useState("");
@@ -49,6 +52,11 @@ function App() {
     setTotalIncome(totalIncome);
     setTotalExpense(totalExpense);
   }, [entries]);
+
+  const store = createStore((state = initialEntries) => {
+    return state;
+  });
+  console.log("store", store.getState());
   const deleteEntry = (id) => {
     const result = entries.filter((entry) => {
       return entry.id !== id;
