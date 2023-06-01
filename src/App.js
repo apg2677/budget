@@ -16,7 +16,12 @@ function App() {
   const [isExpense, setIsExpense] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [entryId, setEntryId] = useState(null);
-
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [totalExpense, setTotalExpense] = useState(0);
+  const [balance, setBalance] = useState(0);
+  useEffect(() => {
+    setBalance(totalIncome - totalExpense);
+  }, [totalIncome, totalExpense]);
   useEffect(() => {
     if (!isOpen && entryId) {
       const index = entries.findIndex((entry) => entry.id === entryId);
@@ -28,6 +33,21 @@ function App() {
       resetEntry();
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    let totalIncome = 0;
+    let totalExpense = 0;
+    entries.map((entry) => {
+      if (entry.isExpense) {
+        return (totalExpense += +entry.value);
+      }
+      return (totalIncome += +entry.value);
+    });
+    console.log(totalIncome);
+    console.log(totalExpense);
+    setTotalIncome(totalIncome);
+    setTotalExpense(totalExpense);
+  }, [entries]);
   const deleteEntry = (id) => {
     const result = entries.filter((entry) => {
       return entry.id !== id;
@@ -61,15 +81,15 @@ function App() {
   };
   const resetEntry = () => {
     setDescription("");
-    setValue("");
+    setValue(0);
     setIsExpense(true);
   };
   return (
     <Container>
       <MainHeader title="Budget" />
-      <DisplayBalance title="Your Balance:" value="2,500.00" size="small" />
+      <DisplayBalance title="Your Balance:" value={balance} size="small" />
 
-      <DisplayBalances />
+      <DisplayBalances totalIncome={totalIncome} totalExpense={totalExpense} />
 
       <MainHeader title={"History"} type="h3" />
       <EntryLines
@@ -106,8 +126,8 @@ function App() {
 export default App;
 
 var initialEntries = [
-  { id: 1, description: "Work Income", value: "1000.00", isExpense: false },
-  { id: 2, description: "Water Bill", value: "20.00", isExpense: true },
-  { id: 3, description: "Rent", value: "300.00", isExpense: true },
-  { id: 4, description: "Power Bill", value: "50.00", isExpense: true },
+  { id: 1, description: "Work Income", value: 1000.0, isExpense: false },
+  { id: 2, description: "Water Bill", value: 20.0, isExpense: true },
+  { id: 3, description: "Rent", value: 300.0, isExpense: true },
+  { id: 4, description: "Power Bill", value: 50.0, isExpense: true },
 ];
