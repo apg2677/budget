@@ -47,16 +47,58 @@ function App() {
       }
       return (totalIncome += +entry.value);
     });
-    console.log(totalIncome);
-    console.log(totalExpense);
+
     setTotalIncome(totalIncome);
     setTotalExpense(totalExpense);
   }, [entries]);
 
-  const store = createStore((state = initialEntries) => {
-    return state;
+  const store = createStore((state = initialEntries, action) => {
+    switch (action.type) {
+      case "ADD_ENTRY": {
+        const newEntries = state.concat({ ...action.payload });
+        return newEntries;
+      }
+      case "REMOVE_ENTRY": {
+        const newEntries = state.filter((entry) => {
+          return entry.id !== action.payload;
+        });
+
+        return newEntries;
+      }
+
+      default:
+        return state;
+    }
   });
-  console.log("store", store.getState());
+
+  store.subscribe(() => {
+    console.log("store: ", store.getState());
+  });
+
+  const payload_add = {
+    id: 5,
+    description: "Hello from Redux",
+    value: 100,
+    isExpense: false,
+  };
+  const payload_remove = {
+    id: 1,
+  };
+  function addEntryRedux(payload) {
+    return { type: "ADD_ENTRY", payload };
+  }
+  function removeEntryRedux(id) {
+    return {
+      type: "REMOVE_ENTRY",
+      payload: id,
+    };
+  }
+  store.dispatch(addEntryRedux(payload_add));
+  store.dispatch(removeEntryRedux(1));
+  store.dispatch(removeEntryRedux(2));
+  store.dispatch(removeEntryRedux(3));
+  store.dispatch(removeEntryRedux(4));
+  store.dispatch(removeEntryRedux(5));
   const deleteEntry = (id) => {
     const result = entries.filter((entry) => {
       return entry.id !== id;
@@ -83,8 +125,7 @@ function App() {
       value,
       isExpense,
     });
-    console.log("result", result);
-    console.log("entries", entries);
+
     setEntries(result);
     resetEntry();
   };
