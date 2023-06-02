@@ -10,10 +10,8 @@ import DisplayBalances from "./components/DisplayBalances";
 import EntryLines from "./components/EntryLines";
 import ModalEdit from "./components/ModalEdit";
 
-import { legacy_createStore as createStore } from "redux";
-
+import { useSelector } from "react-redux";
 function App() {
-  const [entries, setEntries] = useState(initialEntries);
   const [description, setDescription] = useState("");
   const [value, setValue] = useState(0);
   const [isExpense, setIsExpense] = useState(true);
@@ -22,6 +20,8 @@ function App() {
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpense, setTotalExpense] = useState(0);
   const [balance, setBalance] = useState(0);
+
+  const entries = useSelector((state) => state.entries);
   useEffect(() => {
     setBalance(totalIncome - totalExpense);
   }, [totalIncome, totalExpense]);
@@ -32,7 +32,7 @@ function App() {
       newEntries[index].description = description;
       newEntries[index].value = value;
       newEntries[index].isExpense = isExpense;
-      setEntries(newEntries);
+      // setEntries(newEntries);
       resetEntry();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -51,60 +51,6 @@ function App() {
     setTotalIncome(totalIncome);
     setTotalExpense(totalExpense);
   }, [entries]);
-
-  const store = createStore((state = initialEntries, action) => {
-    switch (action.type) {
-      case "ADD_ENTRY": {
-        const newEntries = state.concat({ ...action.payload });
-        return newEntries;
-      }
-      case "REMOVE_ENTRY": {
-        const newEntries = state.filter((entry) => {
-          return entry.id !== action.payload;
-        });
-
-        return newEntries;
-      }
-
-      default:
-        return state;
-    }
-  });
-
-  store.subscribe(() => {
-    console.log("store: ", store.getState());
-  });
-
-  const payload_add = {
-    id: 5,
-    description: "Hello from Redux",
-    value: 100,
-    isExpense: false,
-  };
-  const payload_remove = {
-    id: 1,
-  };
-  function addEntryRedux(payload) {
-    return { type: "ADD_ENTRY", payload };
-  }
-  function removeEntryRedux(id) {
-    return {
-      type: "REMOVE_ENTRY",
-      payload: id,
-    };
-  }
-  store.dispatch(addEntryRedux(payload_add));
-  store.dispatch(removeEntryRedux(1));
-  store.dispatch(removeEntryRedux(2));
-  store.dispatch(removeEntryRedux(3));
-  store.dispatch(removeEntryRedux(4));
-  store.dispatch(removeEntryRedux(5));
-  const deleteEntry = (id) => {
-    const result = entries.filter((entry) => {
-      return entry.id !== id;
-    });
-    setEntries(result);
-  };
 
   const editEntry = (id) => {
     console.log(`edit entry with id: ${id}`);
@@ -126,7 +72,7 @@ function App() {
       isExpense,
     });
 
-    setEntries(result);
+    // setEntries(result);
     resetEntry();
   };
   const resetEntry = () => {
@@ -144,7 +90,6 @@ function App() {
       <MainHeader title={"History"} type="h3" />
       <EntryLines
         entries={entries}
-        deleteEntry={deleteEntry}
         setIsOpen={setIsOpen}
         editEntry={editEntry}
       />
@@ -174,10 +119,3 @@ function App() {
 }
 
 export default App;
-
-var initialEntries = [
-  { id: 1, description: "Work Income", value: 1000.0, isExpense: false },
-  { id: 2, description: "Water Bill", value: 20.0, isExpense: true },
-  { id: 3, description: "Rent", value: 300.0, isExpense: true },
-  { id: 4, description: "Power Bill", value: 50.0, isExpense: true },
-];
